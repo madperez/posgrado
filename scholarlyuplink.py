@@ -5,23 +5,22 @@ anvil.server.connect("WTILNCT6433IFN3C6UHKGVAU-BBOZIA6PRHGNNBOK")
 
 @anvil.server.callable
 def busca_publicaciones(lista):
-  listapub=[]
-  for row in lista:
-     print(row)
-     search_query = scholarly.search_author(row)
-     author = next(search_query).fill()
-    # for pub in author.publications:
-     for pub in range(len(author.publications)):
-        print(pub)
+    listapub=[]
+    for row in lista:
         try:
-            cdata=author.publications[pub].fill()
-            print(cdata)
-            listapub.append({'investigador':row,'year':cdata.bib['year'],'title':cdata.bib['title'], 'author':cdata.bib['author'], 'journal':cdata.bib['journal']})
+            search_query = scholarly.search_author(row)
+            author = scholarly.fill(next(search_query))
+            for index in range(len(author['publications'])):
+                pub=scholarly.fill(author['publications'][index])
+                print(pub['bib'])
+                try:
+                    listapub.append({'investigador': row, 'year': pub['bib']['pub_year'],'title': pub['bib']['title'],'author': pub['bib']['author'], 'journal': pub['bib']['journal']})
+                except:
+                    pass
         except:
             pass
-     #print(next(scholarly.search_author(row)))
-  print(listapub)
-  return listapub
+    print(listapub)
+    return listapub
 
 anvil.server.wait_forever()
 
